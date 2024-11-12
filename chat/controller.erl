@@ -8,15 +8,10 @@ start(MM, _, _) ->
     loop(MM).
 
 loop(MM) ->
-    io:format("[controller ~p] Waiting for message~n", [MM]),
     receive
         {chan, MM, {msg, Msg, from, User}} ->
             io:format("[controller ~p] Message from ~p: ~p~n", [MM, User, Msg]),
-            server ! {mm, MM, {msg, Msg, from, User}},
-            loop(MM);
-        {chan, MM, {relay, Msg, from, User}} ->
-            io:format("[controller ~p] Message from ~p: ~p~n", [MM, User, Msg]),
-            % TODO: implement relay
+            chat_server ! {mm, MM, {msg, Msg, from, User}},
             loop(MM);
         {'EXIT', Pid, Reason} ->
             io:format("[controller ~p] Process ~p exiting: ~p~n", [MM, Pid, Reason]),

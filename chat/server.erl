@@ -20,8 +20,7 @@ loop(Controllers) ->
             io:format("[server] Message from ~p: ~p~n", [User, Msg]),
             lists:foreach(
                 fun(C) ->
-                    % TODO: fix this
-                    lib_chan_mm:send(C, {relay, Msg, from, User})
+                    lib_chan_mm:send(C, {msg, Msg, from, User})
                 end,
                 lists:delete(MM, Controllers)
             ),
@@ -33,3 +32,5 @@ loop(Controllers) ->
             io:format("[server] Received: ~p~n", [X]),
             loop(Controllers)
     end.
+
+% TODO: broadcast login/logout messages

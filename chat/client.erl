@@ -7,11 +7,15 @@ connect(User) ->
             io:format("[client] Successfully connected~n"),
             put(chat_mm, MM),
             put(chat_user, User),
+            spawn(fun() ->
+                lib_chan_mm:controller(MM, self()),
+                loop(MM)
+            end),
             ok;
         {error, Why} ->
             io:format("[client] Failed to connect: ~p~n", [Why]),
+            io:format("[client] Retrying in 1 sec...~n"),
             sleep(1000),
-            io:format("[client] Retrying...~n"),
             connect(User)
     end.
 
@@ -21,3 +25,13 @@ sleep(T) ->
     end.
 
 send_message(Msg) -> lib_chan_mm:send(get(chat_mm), {msg, Msg, from, get(chat_user)}).
+
+loop(MM) ->
+    receive
+        {chan, MM, {msg, Msg, from, User}} ->
+            io:format("[client] Message from ~p: ~p~n", [User, Msg]),
+            loop(MM);
+        X ->
+            io:format("[client] Received: ~p~n", [X]),
+            loop(MM)
+    end.
