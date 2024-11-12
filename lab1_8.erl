@@ -1,8 +1,8 @@
 -module(lab1_8).
--export([start/0, print/1, stop/0]).
+-export([start/0, print/1, stop/0, loop/0]).
 
 start() -> 
-  Pid = spawn(lab1_8, loop, []),
+  Pid = spawn(?MODULE, loop, []),
   register(server, Pid),
   ok.
 
