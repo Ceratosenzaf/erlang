@@ -13,24 +13,27 @@ start() ->
 
 loop(Controllers) ->
     receive
-        {mm, MM, {login}} ->
-            io:format("[server] Controller ~p logged in~n", [MM]),
+        {mm, MM, {login, User}} ->
+            io:format("[server] User @~p logged in~n", [User]),
+            broadcast({login, User}, lists:delete(MM, Controllers)),
             loop([MM | Controllers]);
         {mm, MM, {msg, Msg, from, User}} ->
-            io:format("[server] Message from ~p: ~p~n", [User, Msg]),
-            lists:foreach(
-                fun(C) ->
-                    lib_chan_mm:send(C, {msg, Msg, from, User})
-                end,
-                lists:delete(MM, Controllers)
-            ),
+            io:format("[server] Message from @~p: ~p~n", [User, Msg]),
+            broadcast({msg, Msg, from, User}, lists:delete(MM, Controllers)),
             loop(Controllers);
-        {'EXIT', MM, Reason} ->
-            io:format("[server] Controller ~p closing: ~p~n", [MM, Reason]),
+        {mm, MM, {logout, User}} ->
+            io:format("[server] User @~p logged out~n", [User]),
+            broadcast({logout, User}, lists:delete(MM, Controllers)),
             loop(lists:delete(MM, Controllers));
         X ->
             io:format("[server] Received: ~p~n", [X]),
             loop(Controllers)
     end.
 
-% TODO: broadcast login/logout messages
+broadcast(Msg, Controllers) ->
+    lists:foreach(
+        fun(C) ->
+            lib_chan_mm:send(C, Msg)
+        end,
+        Controllers
+    ).
