@@ -69,7 +69,7 @@ loop(Peers) ->
         {'EXIT', Pid, _Why} ->
             {User, Pid} = lists:keyfind(Pid, 2, Peers),
             io:format("[client] ~p logged out~n", [User]),
-            loop(lists:keydelete(Pid, 2, Peers));
+            loop(lists:delete({User, Pid}, Peers));
         X ->
             io:format("[client] received ~p~n", [X]),
             loop(Peers)
