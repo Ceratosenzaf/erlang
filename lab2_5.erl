@@ -3,6 +3,8 @@
 
 set_cookie() -> erlang:set_cookie(node(), 'cookie').
 
+% first peer connects with connect(User), second peer connects with connect(User, Peer)
+% Peer is the Pid of the first peer or {client, Node} where Node is the name of the first peer's node
 connect(User) -> connect(User, undefined).
 connect(User, Peer) ->
     set_cookie(),
