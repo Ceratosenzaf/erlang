@@ -41,7 +41,7 @@ loop(MM) ->
             io:format("[client] @~p disconnected~n", [User]),
             loop(MM);
         {chan_closed, MM} ->
-            io:format("[client] Connection closed~n", []),
+            io:format("[client] Connection lost~n", []),
             connect(get(chat_user));
         X ->
             io:format("[client] Received: ~p~n", [X]),
