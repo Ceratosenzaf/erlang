@@ -4,25 +4,10 @@
 start(N) ->
     put(controller, self()),
     put(sieve_parent, self()),
-    FirstSieve = spawn_sieves(primes(N)),
+    FirstSieve = spawn_sieves(lists:seq(2, N + 1)),
     register(firstSieve, FirstSieve),
     register(controller, self()),
     loop(N).
-
-primes(N) when N > 1 ->
-    [
-        X
-     || X <- lists:seq(2, N),
-        (length(
-            [
-                Y
-             || Y <- lists:seq(2, trunc(math:sqrt(X))),
-                ((X rem Y) == 0)
-            ]
-        ) == 0)
-    ];
-primes(_) ->
-    [].
 
 spawn_sieves([]) ->
     ok;
