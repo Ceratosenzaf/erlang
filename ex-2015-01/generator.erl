@@ -8,7 +8,7 @@ start(Max) ->
 loop(N, Max) ->
     receive
         {get, Pid} ->
-            V = N+1,
+            V = N + 1,
             io:format("[generator ~p] getting ~p~n", [self(), V]),
             Pid ! {get, V},
             loop(V rem Max, Max);

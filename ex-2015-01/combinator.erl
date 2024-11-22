@@ -4,7 +4,8 @@
 
 start(N, Max) -> 
     Pids = [spawn(fun() -> generator:start(Max) end) || _ <- lists:seq(1, N)],
-    loop(Pids, Max).
+    Combinations = get_combinations(Pids, Max),
+    lists:foreach(fun(X) -> print_combination(X) end, Combinations).
 
 get_combinations([], _) -> [[]];
 get_combinations([H | T], Max) ->
@@ -28,7 +29,3 @@ get_combinations([H | T], Max) ->
 
 print_combination([X]) -> io:format("~p~n", [X]); 
 print_combination([H | T]) -> io:format("~p, ", [H]), print_combination(T).
-
-loop(Pids, Max) ->
-    Combinations = get_combinations(Pids, Max),
-    lists:foreach(fun(X) -> print_combination(X) end, Combinations).
