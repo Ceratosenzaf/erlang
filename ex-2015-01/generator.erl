@@ -13,6 +13,6 @@ loop(N, Max) ->
             Pid ! {get, V},
             loop(V rem Max, Max);
         X ->
-            io:format("[generator ~p] received ~p~n", [self(), X]),
+            io:format("[generator ~p] ERROR - received ~p~n", [self(), X]),
             loop(N, Max)
     end.
