@@ -8,14 +8,14 @@ loop(M) ->
         {msg, start} ->
             io:format("[receiver] received start of message, previous message: '~p'~n", [M]),
             loop([]);
-        {msg, end} ->
-            io:format("[receiver] received end of message, complete message: '~p'~n", [M]),
-            loop([]);
+        {msg, stop} ->
+            io:format("[receiver] received end of message, complete message: '~p'~n", [tl(M)]),
+            loop(tl(M));
         {msg, X} ->
             io:format("[receiver] received message: ~p~n", [X]),
-            loop(M ++ X);
+            loop(M ++ " " ++ X);
         {quit} ->
-            io:format("[receiver] quitting~n", []);
+            io:format("[receiver] quitting~n");
         X ->
             io:format("[receiver] WARNING - received: ~p~n", [X]),
             loop(M)
